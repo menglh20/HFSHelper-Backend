@@ -15,10 +15,10 @@ def register(request):
     if request.method == "POST":
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        logger.info(f"[register] Registering user body: {body}")
+        logger.info(f"[register] Registering name body: {body}")
         name = body["name"]
         password = body["password"]
-        logger.info(f"[register] Registering user: {name}")
+        logger.info(f"[register] Registering name: {name}")
         if User.objects.filter(name=name).exists():
             logger.info(f"[register] User already exists: {name}")
             return JsonResponse({
@@ -44,7 +44,7 @@ def login(request):
         body = json.loads(body_unicode)
         name = body["name"]
         password = body["password"]
-        logger.info(f"[login] Logging in user: {name}")
+        logger.info(f"[login] Logging in name: {name}")
         if not User.objects.filter(name=name).exists():
             logger.info(f"[login] User does not exist: {name}")
             return JsonResponse({
@@ -74,11 +74,11 @@ def detect(request):
     if request.method == "POST":
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        user = body["user"]
+        name = body["name"]
         fileID = body["fileID"]
-        logger.info(f"[detect] Detection result: {user}")
-        if not User.objects.filter(user=user).exists():
-            logger.info(f"[detect] User does not exist: {user}")
+        logger.info(f"[detect] Detection result: {name}")
+        if not User.objects.filter(name=name).exists():
+            logger.info(f"[detect] User does not exist: {name}")
             return JsonResponse({
                 "code": 400,
                 "message": "User does not exist"
@@ -86,12 +86,12 @@ def detect(request):
         current_time = datetime.datetime.now()
         current_time = current_time.strftime("%Y.%m.%d %H:%M:%S")
         save_name = current_time.replace(".", "").replace(":", "")
-        save_path = f"media/{user}_{save_name}/"
-        record = Result(user=user, result=0, comment=0, time=current_time, save_path=save_path, fileId=str(fileID))
+        save_path = f"media/{name}_{save_name}/"
+        record = Result(name=name, result=0, comment=0, time=current_time, save_path=save_path, fileId=str(fileID))
         record.save()
         try:
             data = {
-                'user': user,
+                'name': name,
                 'fileID': fileID
             }
             response = requests.post("http://123.56.218.127/api/detect/detect/", json=data)
@@ -101,7 +101,7 @@ def detect(request):
             record.result = result
             record.detail = detail
             record.save()
-            logger.info(f"[detect] Detection success: {user} {result} {detail}")
+            logger.info(f"[detect] Detection success: {name} {result} {detail}")
             return JsonResponse({
                 "code": 200,
                 "id": record.id,
@@ -111,7 +111,7 @@ def detect(request):
             })
         except Exception as e:
             record.delete()
-            logger.error(f"[detect] Detection failed: {user} {str(e)}")
+            logger.error(f"[detect] Detection failed: {name} {str(e)}")
             return JsonResponse({
                 "code": 500,
                 "message": str(e)
