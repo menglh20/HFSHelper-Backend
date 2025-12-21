@@ -83,13 +83,12 @@ def detect(request):
                 "code": 400,
                 "message": "User does not exist"
             })
-        str_name = name
-        name = User.objects.get(name=name)
+        user = User.objects.get(name=name)
         current_time = datetime.datetime.now()
         current_time = current_time.strftime("%Y.%m.%d %H:%M:%S")
         save_name = current_time.replace(".", "").replace(":", "")
-        save_path = f"media/{str_name}_{save_name}/"
-        record = Result(name=name, result=0, comment=0, time=current_time, save_path=save_path, fileId=str(fileID))
+        save_path = f"media/{name}_{save_name}/"
+        record = Result(user=user, result=0, comment=0, time=current_time, save_path=save_path, fileId=str(fileID))
         record.save()
         try:
             data = {
@@ -138,8 +137,8 @@ def history(request):
                 "code": 400,
                 "message": "User does not exist"
             })
-        name = User.objects.get(name=name)
-        results = Result.objects.filter(name=name).order_by("time")
+        user = User.objects.get(name=name)
+        results = Result.objects.filter(user=user).order_by("time")
         total = results.count()
         results = results[(page - 1) * 10:page * 10]
         return JsonResponse({
