@@ -95,8 +95,8 @@ def detect(request):
                 'name': name,
                 'fileID': fileID
             }
-            response = requests.post("http://123.56.218.127/api/detect/detect/", json=data)
-            logger.info(f"[detect] recieve response from http://123.56.218.127/api/detect/detect: " + response.text)
+            response = requests.post("http://152.136.105.223/detect/detect/", json=data)
+            logger.info(f"[detect] recieve response from http://152.136.105.223/detect/detect/: " + response.text)
             res = json.loads(response.text)
             result, detail = res["result"], res["detail"]
             record.result = result
