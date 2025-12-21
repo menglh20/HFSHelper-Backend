@@ -83,11 +83,12 @@ def detect(request):
                 "code": 400,
                 "message": "User does not exist"
             })
+        str_name = name
         name = User.objects.get(name=name)
         current_time = datetime.datetime.now()
         current_time = current_time.strftime("%Y.%m.%d %H:%M:%S")
         save_name = current_time.replace(".", "").replace(":", "")
-        save_path = f"media/{name.name}_{save_name}/"
+        save_path = f"media/{str_name}_{save_name}/"
         record = Result(name=name, result=0, comment=0, time=current_time, save_path=save_path, fileId=str(fileID))
         record.save()
         try:
