@@ -10,14 +10,11 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
-    
-    def getname(self):
-        return self.name
-    
+
 
 class Result(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
     time = models.CharField(max_length=50)
     result = models.IntegerField()
     comment = models.IntegerField()
@@ -26,4 +23,4 @@ class Result(models.Model):
     fileId = models.CharField(max_length=1000, default="")
 
     def __str__(self):
-        return f"{self.user.getname()} - {self.result} at {self.time}"
+        return f"{self.name} - {self.result} at {self.time}"
