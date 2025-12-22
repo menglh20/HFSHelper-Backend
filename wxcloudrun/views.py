@@ -138,7 +138,7 @@ def history(request):
                 "code": 400,
                 "message": "User does not exist"
             })
-        results = Result.objects.filter(name=name).order_by("time")
+        results = Result.objects.filter(name=name).order_by("-time")
         total = results.count()
         results = results[(page - 1) * 10:page * 10]
         return JsonResponse({
